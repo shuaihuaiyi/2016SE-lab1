@@ -64,39 +64,40 @@ public class Calculator
 		
 	}
 	//将字符串表达式转换成自定义数据类型
-	static void expression(String input)
+	static ArrayList<Monomial> expression(String input)
 	{
 		ArrayList <Monomial> exp = new ArrayList <Monomial> ();//表达式
 		//FIXME 异常处理呢？？？@lqf
-		String fixedInput = input.replaceAll("\\s+","");
+		String fixedInput = input.replaceAll("(?<=[+\\-*^])\\s+(?=[+\\-*^])","");
 		String[] monomials = fixedInput.split("(?=\\+|-)");
 		for(String monomial : monomials)
 		{
 			exp.add(new Monomial(monomial));
 		}
+		return exp;
 	}
 	//按照输入的值对表达式进行计算
 	//注意加法的处理
-	static void simplify(String input)
+	static void simplify(ArrayList <Monomial> exp, String input)
 	{
-		String[] assigns = input.substring(9).split(" ");//FIXME 开始时有空格则无法处理
+		String[] assigns = input.substring(9).split("\\s+");//FIXME 开始时有空格则无法处理
 		for(String assign : assigns)
 		{
 			String[] temp = assign.split("=");
 			if(temp.length == 1)
 			{
-				//TODO 异常处理
+				//TODO 此时应当报错
 			}
 			else
 			{
 				String var = temp[0];
 				Double value = Double.valueOf(temp[1]);
-				//TODO 
+				
 			}
 		}
 	}
 	//对表达式求导
-	static void derivative(String input)
+	static void derivative(ArrayList <Monomial> exp, String input)
 	{
 		//TODO 补全这个函数
 		
@@ -104,7 +105,7 @@ public class Calculator
 	
 	public static void main(String[] args)
 	{
-		//HashMap<String, Integer> vars = new HashMap<String, Integer>();
+		//ArrayList <Monomial> exp;
 		Scanner scan = new Scanner(System.in);
 		while(true)
 		{
@@ -116,12 +117,12 @@ public class Calculator
 			}
 			else
 			{
-				//System.out.println(input.lookingAt("asc"));
-				String[] splitedInputs = input.substring(9).split(" ");
+				System.out.println(input.replaceAll("(?<=[+\\-*^])\\s+(?=[+\\-*^])",""));
+				/*String[] splitedInputs = input.substring(9).split(" ");
 				for(String monomial:splitedInputs)
 				{
 					System.out.println(monomial);
-				}
+				}*/
 			}
 		}
 		/*while(true)
@@ -129,24 +130,23 @@ public class Calculator
 			if(scan.hasNextLine())
 			{
 				String input = scan.nextLine();
-				if(input.matches("^[A-Za-z0-9 -][A-Za-z0-9*^]*[([ +-]{1})([A-Za-z0-9*^]+)]*$"))
+				//if(input.matches("^[A-Za-z0-9 \\-][A-Za-z0-9*^]*[([ +\\-]{1})([A-Za-z0-9*^]+)]*$"))
+				//{
+				//	//string=input;
+				//	//TODO 
+				//	//System.out.println(input);
+				//}
+				if(input.matches("!simplify[ A-Za-z0-9=]+$") )//处理运算命令
 				{
-					string=input;
-					//TODO 
-					System.out.println(input);
+					simplify(exp,input);
 				}
-				else if(input.matches("!simplify[ A-Za-z0-9=]+$") )
+				else if(input.matches("!d\\/d[A-Za-z]+$"))//处理求导命令
 				{
-					simplify(string,input);
+					derivative(exp,input);
 				}
-				else if(input.matches("!d\\/d[A-Za-z]+$"))
+				else//处理表达式
 				{
-					derivative(string,input);
-				}
-				else
-				{
-					System.out.println("Error input!Please try it again!");
-					System.exit(0);
+					exp = expression(input);
 				}
 			}
 			
