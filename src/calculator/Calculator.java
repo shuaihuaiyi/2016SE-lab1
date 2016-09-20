@@ -15,6 +15,10 @@ public class Calculator
 		{
 			coefficient = 1.0;
 			vars = new HashMap<String, Integer>();
+			
+			String var;//变量名
+			int index;//指数
+			
 			if(monomial.charAt(0) == '-')//处理负号
 			{
 				coefficient = -1.0;
@@ -27,7 +31,7 @@ public class Calculator
 			 *3、幂式，如x^3，value^5
 			 */
 			if(factors.length == 1)
-				;//FIXME Error!!
+				;//TODO 异常处理
 			else
 			{
 				for (String factor : factors)
@@ -41,22 +45,26 @@ public class Calculator
 					{
 						coefficient *= Double.valueOf(factor);
 					}
-					else if(factor.matches("^[A-Za-z]+\\^[1-9][0-9]*$"))//幂式
+					else if(factor.matches("^[A-Za-z]+\\^[0-9]+$"))//幂式
 					{
 						String[] pair = factor.split("(?<=[A-Za-z]+)\\^(?=[1-9][0-9]*)");
 						if(pair.length == 1)
-							;//FIXME Error!!
+							;//TODO 异常处理
 						else
 						{
-							String var = pair[0];//变量名
-							int index = Integer.valueOf(pair[1]);//指数
-							vars.put(var,(((vars.get(var)==null) ? 0 : (vars.get(var)))+index));
+							if (pair[0].matches("^[A-Za-z]+$"))
+								var = pair[0];
+							else if(pair[1].matches("^[0-9]+$"))
+								index = Integer.valueOf(pair[1]);
+							else
+								return;//TODO 异常处理
+							vars.put(var,(((vars.get(var)==null) ? 0 : (vars.get(var)))+index));//忽略这个错误
 						}
 						
 					}
 					else
 					{
-						;//FIXME Error!!
+						;//TODO 异常处理
 					}
 				}
 			}
@@ -67,7 +75,7 @@ public class Calculator
 	static ArrayList<Monomial> expression(String input)
 	{
 		ArrayList <Monomial> exp = new ArrayList <Monomial> ();//表达式
-		//FIXME 异常处理呢？？？@lqf
+		//TODO 把判断条件放这里 @李启飞
 		String fixedInput = input.replaceAll("(?<=[+\\-*^])\\s+(?=[+\\-*^])","");
 		String[] monomials = fixedInput.split("(?=\\+|-)");
 		for(String monomial : monomials)
@@ -80,19 +88,26 @@ public class Calculator
 	//注意加法的处理
 	static void simplify(ArrayList <Monomial> exp, String input)
 	{
-		String[] assigns = input.substring(9).split("\\s+");//FIXME 开始时有空格则无法处理
+		String[] assigns = input.substring(9).split("\\s+");
+		String var;
+		Double value;
 		for(String assign : assigns)
 		{
-			String[] temp = assign.split("=");
-			if(temp.length == 1)
+			String[] temps = assign.split("=");
+			if(temps.length == 1)
 			{
 				//TODO 此时应当报错
 			}
 			else
 			{
-				String var = temp[0];
-				Double value = Double.valueOf(temp[1]);
-				
+				for(String temp : temps)
+				{
+					if(temp.matches("^[A-Za-z]+$"))
+						var = temp;
+					else if(temp.matches("^[0-9]+(\\.[0-9]+)?$"))
+						value = Double.valueOf(temp);
+					
+				}
 			}
 		}
 	}
@@ -117,7 +132,7 @@ public class Calculator
 			}
 			else
 			{
-				System.out.println(input.replaceAll("(?<=[+\\-*^])\\s+(?=[+\\-*^])",""));
+				System.out.println(input.matches("^[0-9]+(.[0-9]+)?$"));
 				/*String[] splitedInputs = input.substring(9).split(" ");
 				for(String monomial:splitedInputs)
 				{
@@ -130,12 +145,7 @@ public class Calculator
 			if(scan.hasNextLine())
 			{
 				String input = scan.nextLine();
-				//if(input.matches("^[A-Za-z0-9 \\-][A-Za-z0-9*^]*[([ +\\-]{1})([A-Za-z0-9*^]+)]*$"))
-				//{
-				//	//string=input;
-				//	//TODO 
-				//	//System.out.println(input);
-				//}
+
 				if(input.matches("!simplify[ A-Za-z0-9=]+$") )//处理运算命令
 				{
 					simplify(exp,input);

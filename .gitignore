@@ -1,3 +1,7 @@
 *.class
 *.classpath
 *.project
+\bin\
+/bin
+/.project
+/.classpath
