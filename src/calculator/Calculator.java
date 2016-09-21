@@ -24,7 +24,7 @@ public class Calculator
 				coefficient = -1.0;
 				monomial = monomial.substring(1);
 			}
-			String[] factors = monomial.split("\\*|(?<=[0-9])(?=[A-Za-z])");
+			String[] factors = monomial.split("\\*|(?<=[0-9])(?=[A-Za-z])|(?<=[A-Za-z])(?=[0-9])");
 			/*正常来讲，factor只能有以下几种情况：
 			 *1、变量，如x，boo
 			 *2、数字，如1, 12，15.2
@@ -41,7 +41,7 @@ public class Calculator
 						vars.put(factor,(((vars.get(factor)==null) ? 0 : (vars.get(factor)))+1));
 						
 					}
-					else if(factor.matches("^[0-9]+[\\.]?[0-9]+$"))//数字
+					else if(factor.matches("^[0-9]+(\\.[0-9]+)?$"))//数字
 					{
 						coefficient *= Double.valueOf(factor);
 					}
@@ -91,7 +91,8 @@ public class Calculator
 		String[] assigns = input.substring(9).split("\\s+");
 		String var;
 		Double value;
-		for(String assign : assigns)
+		//TODO 空串的处理
+		for(String assign : assigns)//得到单个赋值表达式
 		{
 			String[] temp = assign.split("=");
 			if(temp.length == 1)
@@ -143,8 +144,10 @@ public class Calculator
 			}
 			else
 			{
-				System.out.println(input.matches("^[0-9]+(.[0-9]+)?$"));
-				/*String[] splitedInputs = input.substring(9).split(" ");
+				System.out.println(input.matches("^[\\s]*[-]?[\\s]*(([\\.])([0-9]+))*(([a-zA-Z]+)([\\^])([1-9][0-9]*))*[A-Za-z0-9]+[A-Za-z0-9]*(([0-9]+)(([\\s]*)([*])([\\s]*)([A-Za-z0-9]+))*(([\\s]*)([+-])([\\s]*)(([a-zA-Z]+)([\\^])([1-9][0-9]*)*(([\\.])([0-9]+))*)*([A-Za-z0-9])+(([\\s]*)([*])([\\s]*)([A-Za-z0-9]+))*)*[\\s]*"));//处理表达式);;
+				//System.out.println(input.matches("^[\\s]*[-]*[\\s]*{0,1}[A-Za-z0-9]+[A-Za-z0-9]*(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*(([\\s]*)([+-])([\\s]*)([A-Za-z0-9])+(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*)*[\\s]*"));
+				/*String temp = input.substring(9);
+				String[] splitedInputs = temp.split("\\s+");
 				for(String monomial:splitedInputs)
 				{
 					System.out.println(monomial);
@@ -156,7 +159,7 @@ public class Calculator
 			if(scan.hasNextLine())
 			{
 				String input = scan.nextLine();
-				if(input.matches("^[\\s]*[-]*[\\s]*{0,1}[A-Za-z0-9]+[A-Za-z0-9]*(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*(([\\s]*)([+-])([\\s]*)([A-Za-z0-9])+(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*)*"))
+				if(input.matches("^[\\s]*[-]*[\\s]*{0,1}[A-Za-z0-9]+[A-Za-z0-9]*(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*(([\\s]*)([+-])([\\s]*)([A-Za-z0-9])+(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*)*"))//处理表达式
 				{
 					exp = expression(input);
 				}
@@ -168,7 +171,7 @@ public class Calculator
 				{
 					derivative(exp,input);
 				}
-				else//处理表达式
+				else
 				{
 					//TODO 异常
 				}
