@@ -30,38 +30,38 @@ public class Calculator
 			 *2、数字，如1, 12，15.2
 			 *3、幂式，如x^3，value^5
 			 */
-			if(factors.length == 1)
-				;//TODO 异常处理
-			else
+			for (String factor : factors)
 			{
-				for (String factor : factors)
+				if(factor.matches("^[A-Za-z]+$"))//变量
+					vars.put(factor,(((vars.get(factor)==null) ? 0 : (vars.get(factor)))+1));
+				else if(factor.matches("^[0-9]+(\\.[0-9]+)?$"))//数字
+					coefficient *= Double.valueOf(factor);
+				else if(factor.matches("^[A-Za-z]+\\^[0-9]+$"))//幂式
 				{
-					if(factor.matches("^[A-Za-z]+$"))//变量
-						vars.put(factor,(((vars.get(factor)==null) ? 0 : (vars.get(factor)))+1));
-					else if(factor.matches("^[0-9]+(\\.[0-9]+)?$"))//数字
-						coefficient *= Double.valueOf(factor);
-					else if(factor.matches("^[A-Za-z]+\\^[0-9]+$"))//幂式
-					{
-						String[] pair = factor.split("(?<=[A-Za-z]+)\\^(?=[1-9][0-9]*)");
-						if(pair.length == 1)
-							;//TODO 异常处理
-						else
-						{
-							if (pair[0].matches("^[A-Za-z]+$") && pair[1].matches("^[0-9]+$"))
-							{	
-								var = pair[0];
-								index = Integer.valueOf(pair[1]);
-								vars.put(var,(((vars.get(var)==null) ? 0 : (vars.get(var)))+index));
-							}
-							else
-								return;//TODO 异常处理
-						}
-						
-					}
-					else
+					String[] pair = factor.split("(?<=[A-Za-z]+)\\^(?=[1-9][0-9]*)");
+					if(pair.length == 1)
 						;//TODO 异常处理
+					else
+					{
+						if (pair[0].matches("^[A-Za-z]+$") && pair[1].matches("^[0-9]+$"))
+						{	
+							var = pair[0];
+							index = Integer.valueOf(pair[1]);
+							vars.put(var,(((vars.get(var)==null) ? 0 : (vars.get(var)))+index));
+						}
+						else
+							return;//TODO 异常处理
+					}
+					
 				}
+				else
+					;//TODO 异常处理
 			}
+		}
+		Monomial()
+		{
+			coefficient = 1.0;
+			vars = new HashMap<String, Integer>();
 		}
 		
 	}
@@ -80,6 +80,7 @@ public class Calculator
 	//注意加法的处理
 	static void simplify(ArrayList <Monomial> exp, String input)
 	{
+		ArrayList <Monomial> result = new ArrayList <Monomial>();
 		String[] assigns = input.substring(9).split("\\s+");
 		HashMap <String,Double> solves = new HashMap <String,Double>();
 		//得到单个赋值表达式，进行处理，得到赋值表
@@ -105,8 +106,10 @@ public class Calculator
 			}
 		}
 		//对乘法进行运算
-		for(Monomial monomials : exp)
+		for(int i = 0; i<exp.size(); i++)
 		{
+			result.add(new Monomial());
+			result.get(i).coefficient = exp.get(i).coefficient;
 			
 		}
 	}
