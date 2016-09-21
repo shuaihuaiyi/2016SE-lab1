@@ -37,14 +37,9 @@ public class Calculator
 				for (String factor : factors)
 				{
 					if(factor.matches("^[A-Za-z]+$"))//变量
-					{
 						vars.put(factor,(((vars.get(factor)==null) ? 0 : (vars.get(factor)))+1));
-						
-					}
 					else if(factor.matches("^[0-9]+(\\.[0-9]+)?$"))//数字
-					{
 						coefficient *= Double.valueOf(factor);
-					}
 					else if(factor.matches("^[A-Za-z]+\\^[0-9]+$"))//幂式
 					{
 						String[] pair = factor.split("(?<=[A-Za-z]+)\\^(?=[1-9][0-9]*)");
@@ -52,20 +47,19 @@ public class Calculator
 							;//TODO 异常处理
 						else
 						{
-							if (pair[0].matches("^[A-Za-z]+$"))
+							if (pair[0].matches("^[A-Za-z]+$") && pair[1].matches("^[0-9]+$"))
+							{	
 								var = pair[0];
-							else if(pair[1].matches("^[0-9]+$"))
 								index = Integer.valueOf(pair[1]);
+								vars.put(var,(((vars.get(var)==null) ? 0 : (vars.get(var)))+index));
+							}
 							else
 								return;//TODO 异常处理
-							vars.put(var,(((vars.get(var)==null) ? 0 : (vars.get(var)))+index));//忽略这个错误
 						}
 						
 					}
 					else
-					{
 						;//TODO 异常处理
-					}
 				}
 			}
 		}
@@ -79,9 +73,7 @@ public class Calculator
 		String fixedInput = input.replaceAll("(?<=[+\\-*^])\\s+(?=[+\\-*^])","");
 		String[] monomials = fixedInput.split("(?=\\+|-)");
 		for(String monomial : monomials)
-		{
 			exp.add(new Monomial(monomial));
-		}
 		return exp;
 	}
 	//按照输入的值对表达式进行计算
@@ -89,38 +81,33 @@ public class Calculator
 	static void simplify(ArrayList <Monomial> exp, String input)
 	{
 		String[] assigns = input.substring(9).split("\\s+");
-		String var;
-		Double value;
-		//TODO 空串的处理
-		for(String assign : assigns)//得到单个赋值表达式
+		HashMap <String,Double> solves = new HashMap <String,Double>();
+		//得到单个赋值表达式，进行处理，得到赋值表
+		for(String assign : assigns)
 		{
+			if(assign.length() == 0)
+				continue;
+			//else
 			String[] temp = assign.split("=");
 			if(temp.length == 1)
-			{
-				//TODO 此时应当报错
-			}
+				;//TODO 异常处理
 			else
 			{
-				for(int i = 0;i < temp.length;)
+				if(temp[0].matches("^[A-Za-z]+$") && temp[1].matches("^[0-9]+(\\.[0-9]+)?$"))
 				{
-					if(temp[i].matches("^[A-Za-z]+$"))
-					{
-						var = temp[i];
-						i++;
-					}
-					else if(temp[i].matches("^[0-9]+(\\.[0-9]+)?$"))
-					{
-						value = Double.valueOf(temp[i]);
-						i++;
-					}
+					if(!(solves.containsKey(temp[0])))
+						solves.put(temp[0], (Double.valueOf(temp[1])));
 					else
-					{
-						//TODO 是否需要异常处理？
-						i++;
-					}
-					
+						;//TODO 异常处理
 				}
+				else
+					;//TODO 异常处理	
 			}
+		}
+		//对乘法进行运算
+		for(Monomial monomials : exp)
+		{
+			
 		}
 	}
 	//对表达式求导
@@ -132,7 +119,7 @@ public class Calculator
 	
 	public static void main(String[] args)
 	{
-		//ArrayList <Monomial> exp;
+		ArrayList <Monomial> exp;
 		Scanner scan = new Scanner(System.in);
 		while(true)
 		{
@@ -144,8 +131,6 @@ public class Calculator
 			}
 			else
 			{
-				System.out.println(input.matches("^[\\s]*[-]?[\\s]*(([\\.])([0-9]+))*(([a-zA-Z]+)([\\^])([1-9][0-9]*))*[A-Za-z0-9]+[A-Za-z0-9]*(([0-9]+)(([\\s]*)([*])([\\s]*)([A-Za-z0-9]+))*(([\\s]*)([+-])([\\s]*)(([a-zA-Z]+)([\\^])([1-9][0-9]*)*(([\\.])([0-9]+))*)*([A-Za-z0-9])+(([\\s]*)([*])([\\s]*)([A-Za-z0-9]+))*)*[\\s]*"));//处理表达式);;
-				//System.out.println(input.matches("^[\\s]*[-]*[\\s]*{0,1}[A-Za-z0-9]+[A-Za-z0-9]*(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*(([\\s]*)([+-])([\\s]*)([A-Za-z0-9])+(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*)*[\\s]*"));
 				/*String temp = input.substring(9);
 				String[] splitedInputs = temp.split("\\s+");
 				for(String monomial:splitedInputs)
@@ -160,21 +145,13 @@ public class Calculator
 			{
 				String input = scan.nextLine();
 				if(input.matches("^[\\s]*[-]*[\\s]*{0,1}[A-Za-z0-9]+[A-Za-z0-9]*(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*(([\\s]*)([+-])([\\s]*)([A-Za-z0-9])+(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*)*"))//处理表达式
-				{
 					exp = expression(input);
-				}
 				else if(input.matches("!simplify[ A-Za-z0-9=]+$") )//处理运算命令
-				{
 					simplify(exp,input);
-				}
 				else if(input.matches("!d\\/d[A-Za-z]+$"))//处理求导命令
-				{
 					derivative(exp,input);
-				}
 				else
-				{
 					//TODO 异常
-				}
 			}
 			
 		}*/
