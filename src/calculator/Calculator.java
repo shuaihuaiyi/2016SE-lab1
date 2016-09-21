@@ -93,19 +93,30 @@ public class Calculator
 		Double value;
 		for(String assign : assigns)
 		{
-			String[] temps = assign.split("=");
-			if(temps.length == 1)
+			String[] temp = assign.split("=");
+			if(temp.length == 1)
 			{
 				//TODO 此时应当报错
 			}
 			else
 			{
-				for(String temp : temps)
+				for(int i = 0;i < temp.length;)
 				{
-					if(temp.matches("^[A-Za-z]+$"))
-						var = temp;
-					else if(temp.matches("^[0-9]+(\\.[0-9]+)?$"))
-						value = Double.valueOf(temp);
+					if(temp[i].matches("^[A-Za-z]+$"))
+					{
+						var = temp[i];
+						i++;
+					}
+					else if(temp[i].matches("^[0-9]+(\\.[0-9]+)?$"))
+					{
+						value = Double.valueOf(temp[i]);
+						i++;
+					}
+					else
+					{
+						//TODO 是否需要异常处理？
+						i++;
+					}
 					
 				}
 			}
@@ -145,8 +156,11 @@ public class Calculator
 			if(scan.hasNextLine())
 			{
 				String input = scan.nextLine();
-
-				if(input.matches("!simplify[ A-Za-z0-9=]+$") )//处理运算命令
+				if(input.matches("^[\\s]*[-]*[\\s]*{0,1}[A-Za-z0-9]+[A-Za-z0-9]*(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*(([\\s]*)([+-])([\\s]*)([A-Za-z0-9])+(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*)*"))
+				{
+					exp = expression(input);
+				}
+				else if(input.matches("!simplify[ A-Za-z0-9=]+$") )//处理运算命令
 				{
 					simplify(exp,input);
 				}
@@ -156,7 +170,7 @@ public class Calculator
 				}
 				else//处理表达式
 				{
-					exp = expression(input);
+					//TODO 异常
 				}
 			}
 			
