@@ -83,6 +83,7 @@ public class Calculator
 		ArrayList <Monomial> result = new ArrayList <Monomial>();
 		String[] assigns = input.substring(9).split("\\s+");
 		HashMap <String,Double> solves = new HashMap <String,Double>();
+		Double tempcoe = 0.0;
 		//得到单个赋值表达式，进行处理，得到赋值表
 		for(String assign : assigns)
 		{
@@ -106,11 +107,43 @@ public class Calculator
 			}
 		}
 		//对乘法进行运算
-		for(int i = 0; i<exp.size(); i++)
+		for(int i=0; i<exp.size(); i++)
 		{
+			Monomial monomial = exp.get(i);//处理一个单项式
 			result.add(new Monomial());
-			result.get(i).coefficient = exp.get(i).coefficient;
-			
+			result.get(i).coefficient = monomial.coefficient;//设置系数
+			for(String var : monomial.vars.keySet())//逐个规定变量
+			{
+				if(solves.containsKey(var))
+					result.get(i).coefficient *=  Math.pow(solves.get(var), exp.get(i).vars.get(var));
+				else
+					result.get(i).vars.put(var, monomial.vars.get(var));
+			}
+		}
+		//对加法进行运算
+		for(int i=0; i<exp.size(); i++)
+		{
+			if((exp.get(i).vars.isEmpty()) || (exp.get(i).coefficient.equals(0.0)))
+			{
+				tempcoe += exp.get(i).coefficient;
+				exp.remove(i);
+				i--;
+			}
+		}
+		//将结果输出
+		if(!tempcoe.equals(0.0))
+			System.out.print(tempcoe);
+		for(Monomial monomial:exp)
+		{
+			if(monomial.coefficient < 0)
+				System.out.print(monomial.coefficient);
+			else if(monomial.coefficient > 0)
+				System.out.print("+" + monomial.coefficient);
+			for(String var : monomial.vars.keySet())
+			{
+				for(int i=0; i<monomial.vars.get(var);i++)
+					System.out.print("*"+var);
+			}
 		}
 	}
 	//对表达式求导
@@ -122,7 +155,6 @@ public class Calculator
 	
 	public static void main(String[] args)
 	{
-		ArrayList <Monomial> exp;
 		Scanner scan = new Scanner(System.in);
 		while(true)
 		{
@@ -134,6 +166,11 @@ public class Calculator
 			}
 			else
 			{
+				Double test = -1.2;
+				if(!(test == 1.2))
+				{
+					System.out.println("+" + test);
+				}
 				/*String temp = input.substring(9);
 				String[] splitedInputs = temp.split("\\s+");
 				for(String monomial:splitedInputs)
@@ -142,7 +179,8 @@ public class Calculator
 				}*/
 			}
 		}
-		/*while(true)
+		/*ArrayList <Monomial> exp;
+		while(true)
 		{
 			if(scan.hasNextLine())
 			{
