@@ -4,43 +4,43 @@ import java.util.*;
 
 public class Calculator
 {
-	//µ¥ÏîÊ½Àà
+	//å•é¡¹å¼ç±»
 	private static class Monomial
 	{
-		//±í´ïÊ½ÖĞµÄÔªËØ
-		Double coefficient;//ÏµÊı
-		HashMap<String, Integer> vars;//±äÁ¿£¬±£´æÎª±äÁ¿Ãû->´ÎÊıµÄÓ³Éä
+		//è¡¨è¾¾å¼ä¸­çš„å…ƒç´ 
+		Double coefficient;//ç³»æ•°
+		HashMap<String, Integer> vars;//å˜é‡ï¼Œä¿å­˜ä¸ºå˜é‡å->æ¬¡æ•°çš„æ˜ å°„
 		
 		Monomial(String monomial)
 		{
 			coefficient = 1.0;
 			vars = new HashMap<String, Integer>();
 			
-			String var;//±äÁ¿Ãû
-			int index;//Ö¸Êı
+			String var;//å˜é‡å
+			int index;//æŒ‡æ•°
 			
-			if(monomial.charAt(0) == '-')//´¦Àí¸ººÅ
+			if(monomial.charAt(0) == '-')//å¤„ç†è´Ÿå·
 			{
 				coefficient = -1.0;
 				monomial = monomial.substring(1);
 			}
 			String[] factors = monomial.split("\\*|(?<=[0-9])(?=[A-Za-z])|(?<=[A-Za-z])(?=[0-9])");
-			/*Õı³£À´½²£¬factorÖ»ÄÜÓĞÒÔÏÂ¼¸ÖÖÇé¿ö£º
-			 *1¡¢±äÁ¿£¬Èçx£¬boo
-			 *2¡¢Êı×Ö£¬Èç1, 12£¬15.2
-			 *3¡¢ÃİÊ½£¬Èçx^3£¬value^5
+			/*æ­£å¸¸æ¥è®²ï¼Œfactoråªèƒ½æœ‰ä»¥ä¸‹å‡ ç§æƒ…å†µï¼š
+			 *1ã€å˜é‡ï¼Œå¦‚xï¼Œboo
+			 *2ã€æ•°å­—ï¼Œå¦‚1, 12ï¼Œ15.2
+			 *3ã€å¹‚å¼ï¼Œå¦‚x^3ï¼Œvalue^5
 			 */
 			for (String factor : factors)
 			{
-				if(factor.matches("^[A-Za-z]+$"))//±äÁ¿
+				if(factor.matches("^[A-Za-z]+$"))//å˜é‡
 					vars.put(factor,(((vars.get(factor)==null) ? 0 : (vars.get(factor)))+1));
-				else if(factor.matches("^[0-9]+(\\.[0-9]+)?$"))//Êı×Ö
+				else if(factor.matches("^[0-9]+(\\.[0-9]+)?$"))//æ•°å­—
 					coefficient *= Double.valueOf(factor);
-				else if(factor.matches("^[A-Za-z]+\\^[0-9]+$"))//ÃİÊ½
+				else if(factor.matches("^[A-Za-z]+\\^[0-9]+$"))//å¹‚å¼
 				{
 					String[] pair = factor.split("(?<=[A-Za-z]+)\\^(?=[1-9][0-9]*)");
 					if(pair.length == 1)
-						;//TODO Òì³£´¦Àí
+						;//TODO å¼‚å¸¸å¤„ç†
 					else
 					{
 						if (pair[0].matches("^[A-Za-z]+$") && pair[1].matches("^[0-9]+$"))
@@ -50,12 +50,12 @@ public class Calculator
 							vars.put(var,(((vars.get(var)==null) ? 0 : (vars.get(var)))+index));
 						}
 						else
-							return;//TODO Òì³£´¦Àí
+							return;//TODO å¼‚å¸¸å¤„ç†
 					}
 					
 				}
 				else
-					;//TODO Òì³£´¦Àí
+					;//TODO å¼‚å¸¸å¤„ç†
 			}
 		}
 		Monomial()
@@ -65,26 +65,26 @@ public class Calculator
 		}
 		
 	}
-	//½«×Ö·û´®±í´ïÊ½×ª»»³É×Ô¶¨ÒåÊı¾İÀàĞÍ
+	//å°†å­—ç¬¦ä¸²è¡¨è¾¾å¼è½¬æ¢æˆè‡ªå®šä¹‰æ•°æ®ç±»å‹
 	static ArrayList<Monomial> expression(String input)
 	{
-		ArrayList <Monomial> exp = new ArrayList <Monomial> ();//±í´ïÊ½
-		//TODO °ÑÅĞ¶ÏÌõ¼ş·ÅÕâÀï @ÀîÆô·É
+		ArrayList <Monomial> exp = new ArrayList <Monomial> ();//è¡¨è¾¾å¼
+		//TODO æŠŠåˆ¤æ–­æ¡ä»¶æ”¾è¿™é‡Œ @æå¯é£
 		String fixedInput = input.replaceAll("(?<=[+\\-*^])\\s+(?=[+\\-*^])","");
 		String[] monomials = fixedInput.split("(?=\\+|-)");
 		for(String monomial : monomials)
 			exp.add(new Monomial(monomial));
 		return exp;
 	}
-	//°´ÕÕÊäÈëµÄÖµ¶Ô±í´ïÊ½½øĞĞ¼ÆËã
-	//×¢Òâ¼Ó·¨µÄ´¦Àí
+	//æŒ‰ç…§è¾“å…¥çš„å€¼å¯¹è¡¨è¾¾å¼è¿›è¡Œè®¡ç®—
+	//æ³¨æ„åŠ æ³•çš„å¤„ç†
 	static void simplify(ArrayList <Monomial> exp, String input)
 	{
 		ArrayList <Monomial> result = new ArrayList <Monomial>();
 		String[] assigns = input.substring(9).split("\\s+");
 		HashMap <String,Double> solves = new HashMap <String,Double>();
 		Double tempcoe = 0.0;
-		//µÃµ½µ¥¸ö¸³Öµ±í´ïÊ½£¬½øĞĞ´¦Àí£¬µÃµ½¸³Öµ±í
+		//å¾—åˆ°å•ä¸ªèµ‹å€¼è¡¨è¾¾å¼ï¼Œè¿›è¡Œå¤„ç†ï¼Œå¾—åˆ°èµ‹å€¼è¡¨
 		for(String assign : assigns)
 		{
 			if(assign.length() == 0)
@@ -92,7 +92,7 @@ public class Calculator
 			//else
 			String[] temp = assign.split("=");
 			if(temp.length == 1)
-				;//TODO Òì³£´¦Àí
+				;//TODO å¼‚å¸¸å¤„ç†
 			else
 			{
 				if(temp[0].matches("^[A-Za-z]+$") && temp[1].matches("^[0-9]+(\\.[0-9]+)?$"))
@@ -100,19 +100,19 @@ public class Calculator
 					if(!(solves.containsKey(temp[0])))
 						solves.put(temp[0], (Double.valueOf(temp[1])));
 					else
-						;//TODO Òì³£´¦Àí
+						;//TODO å¼‚å¸¸å¤„ç†
 				}
 				else
-					;//TODO Òì³£´¦Àí	
+					;//TODO å¼‚å¸¸å¤„ç†	
 			}
 		}
-		//¶Ô³Ë·¨½øĞĞÔËËã
+		//å¯¹ä¹˜æ³•è¿›è¡Œè¿ç®—
 		for(int i=0; i<exp.size(); i++)
 		{
-			Monomial monomial = exp.get(i);//´¦ÀíÒ»¸öµ¥ÏîÊ½
+			Monomial monomial = exp.get(i);//å¤„ç†ä¸€ä¸ªå•é¡¹å¼
 			result.add(new Monomial());
-			result.get(i).coefficient = monomial.coefficient;//ÉèÖÃÏµÊı
-			for(String var : monomial.vars.keySet())//Öğ¸ö¹æ¶¨±äÁ¿
+			result.get(i).coefficient = monomial.coefficient;//è®¾ç½®ç³»æ•°
+			for(String var : monomial.vars.keySet())//é€ä¸ªè§„å®šå˜é‡
 			{
 				if(solves.containsKey(var))
 					result.get(i).coefficient *=  Math.pow(solves.get(var), exp.get(i).vars.get(var));
@@ -120,7 +120,7 @@ public class Calculator
 					result.get(i).vars.put(var, monomial.vars.get(var));
 			}
 		}
-		//¶Ô¼Ó·¨½øĞĞÔËËã
+		//å¯¹åŠ æ³•è¿›è¡Œè¿ç®—
 		for(int i=0; i<exp.size(); i++)
 		{
 			if((exp.get(i).vars.isEmpty()) || (exp.get(i).coefficient.equals(0.0)))
@@ -130,7 +130,7 @@ public class Calculator
 				i--;
 			}
 		}
-		//½«½á¹ûÊä³ö
+		//å°†ç»“æœè¾“å‡º
 		if(!tempcoe.equals(0.0))
 			System.out.print(tempcoe);
 		for(Monomial monomial:exp)
@@ -146,56 +146,90 @@ public class Calculator
 			}
 		}
 	}
-	//¶Ô±í´ïÊ½Çóµ¼
-	static void derivative(ArrayList <Monomial> exp, String input)
-	{
-		//TODO ²¹È«Õâ¸öº¯Êı
-		
-	}
-	
-	public static void main(String[] args)
-	{
-		Scanner scan = new Scanner(System.in);
-		while(true)
-		{
-			String input = scan.nextLine();
-			if(input.equals("!"))
-			{
-				scan.close();
-				System.exit(0);
-			}
-			else
-			{
-				Double test = -1.2;
-				if(!(test == 1.2))
-				{
-					System.out.println("+" + test);
-				}
-				/*String temp = input.substring(9);
-				String[] splitedInputs = temp.split("\\s+");
-				for(String monomial:splitedInputs)
-				{
-					System.out.println(monomial);
-				}*/
-			}
-		}
-		/*ArrayList <Monomial> exp;
-		while(true)
-		{
-			if(scan.hasNextLine())
-			{
-				String input = scan.nextLine();
-				if(input.matches("^[\\s]*[-]*[\\s]*{0,1}[A-Za-z0-9]+[A-Za-z0-9]*(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*(([\\s]*)([+-])([\\s]*)([A-Za-z0-9])+(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*)*"))//´¦Àí±í´ïÊ½
-					exp = expression(input);
-				else if(input.matches("!simplify[ A-Za-z0-9=]+$") )//´¦ÀíÔËËãÃüÁî
-					simplify(exp,input);
-				else if(input.matches("!d\\/d[A-Za-z]+$"))//´¦ÀíÇóµ¼ÃüÁî
-					derivative(exp,input);
-				else
-					//TODO Òì³£
-			}
-			
-		}*/
-	}
-
-}
+	//å¯¹è¡¨è¾¾å¼æ±‚å¯¼
+    static void derivative(ArrayList <Monomial> exp, String input)
+        {
+            ArrayList <Monomial> result = new ArrayList <Monomial>();
+            String assigns = input.substring(4).replaceAll("\\s+","");
+            double tempcoe=0.0;
+            for(int i=0; i<exp.size(); i++)
+            {
+                Monomial monomial = exp.get(i);//å¤„ç†ä¸€ä¸ªå•é¡¹å¼
+                result.add(new Monomial());
+                result.get(i).coefficient = monomial.coefficient;//è®¾ç½®ç³»æ•°
+                int count=0;
+                for(String var: monomial.vars.keySet())//é€ä¸ªè§„å®šå˜é‡
+                {
+                    count++;
+                    if(assigns==var&&exp.get(i).vars.get(var)>1)
+                        result.get(i).coefficient *= exp.get(i).vars.get(var);
+                        result.get(i).vars.put(var, monomial.vars.get(var)-1);
+                    else if(assigns==var&&exp.get(i).vars.get(var)==1)
+                        result.get(i).vars.remove(var);
+                    else if(result.get(i).vars.size()==count)
+                        result.remove(i);
+                    else
+                        continue;
+                }
+            }
+            for(Monomial results:result)
+            {
+                if(result.coefficient < 0)
+                    System.out.print(result.coefficient);
+                else if(result.coefficient > 0)
+                    System.out.print("+" + result.coefficient);
+                for(String var : result.vars.keySet())
+                {
+                    for(int i=0; i<result.vars.get(var);i++)
+                        System.out.print("*"+var);
+                }
+            }
+    
+        }
+    	
+    	public static void main(String[] args)
+    	{
+    		Scanner scan = new Scanner(System.in);
+    		while(true)
+    		{
+    			String input = scan.nextLine();
+    			if(input.equals("!"))
+    			{
+    				scan.close();
+    				System.exit(0);
+    			}
+    			else
+    			{
+    				Double test = -1.2;
+    				if(!(test == 1.2))
+    				{
+    					System.out.println("+" + test);
+    				}
+    				/*String temp = input.substring(9);
+    				String[] splitedInputs = temp.split("\\s+");
+    				for(String monomial:splitedInputs)
+    				{
+    					System.out.println(monomial);
+    				}*/
+    			}
+    		}
+    		/*ArrayList <Monomial> exp;
+    		while(true)
+    		{
+    			if(scan.hasNextLine())
+    			{
+    				String input = scan.nextLine();
+    				if(input.matches("^[\\s]*[-]*[\\s]*{0,1}[A-Za-z0-9]+[A-Za-z0-9]*(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*(([\\s]*)([+-])([\\s]*)([A-Za-z0-9])+(([\\s]*)([*^])([\\s]*)([A-Za-z0-9]+))*)*"))//å¤„ç†è¡¨è¾¾å¼
+    					exp = expression(input);
+    				else if(input.matches("!simplify[ A-Za-z0-9=]+$") )//å¤„ç†è¿ç®—å‘½ä»¤
+    					simplify(exp,input);
+    				else if(input.matches("!d\\/d[A-Za-z]+$"))//å¤„ç†æ±‚å¯¼å‘½ä»¤
+    					derivative(exp,input);
+    				else
+    					//TODO å¼‚å¸¸
+    			}
+    			
+    		}*/
+    	}
+    
+    }
