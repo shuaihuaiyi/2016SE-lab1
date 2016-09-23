@@ -77,7 +77,6 @@ public class Calculator
 		return exp;
 	}
 	//按照输入的值对表达式进行计算
-	//注意加法的处理
 	static void simplify(ArrayList <Monomial> exp, String input)
 	{
 		ArrayList <Monomial> result = new ArrayList <Monomial>();
@@ -121,27 +120,29 @@ public class Calculator
 			}
 		}
 		//对加法进行运算
-		for(int i=0; i<exp.size(); i++)
+		//TODO 
+		for(int i=0; i<result.size(); i++)
 		{
-			if((exp.get(i).vars.isEmpty()) || (exp.get(i).coefficient.equals(0.0)))
+			if((result.get(i).vars.isEmpty()) || (result.get(i).coefficient.equals(0.0)))
 			{
-				tempcoe += exp.get(i).coefficient;
-				exp.remove(i);
+				tempcoe += result.get(i).coefficient;
+				result.remove(i);
 				i--;
 			}
 		}
 		//将结果输出
 		if(!tempcoe.equals(0.0))
 			System.out.print(tempcoe);
-		for(Monomial monomial:exp)
+		for(int i=0;i<result.size();i++)
 		{
+			Monomial monomial = result.get(i);
 			if(monomial.coefficient < 0)
 				System.out.print(monomial.coefficient);
-			else if(monomial.coefficient > 0)
+			else if((monomial.coefficient > 0) && (i != 0))
 				System.out.print("+" + monomial.coefficient);
 			for(String var : monomial.vars.keySet())
 			{
-				for(int i=0; i<monomial.vars.get(var);i++)
+				for(int i1=0; i1<monomial.vars.get(var);i1++)
 					System.out.print("*"+var);
 			}
 		}
@@ -149,8 +150,33 @@ public class Calculator
 	//对表达式求导
 	static void derivative(ArrayList <Monomial> exp, String input)
 	{
-		//TODO 补全这个函数
-		
+		ArrayList <Monomial> result = new ArrayList <Monomial>();
+        String assigns = input.substring(4).replaceAll("\\s+","");
+        for(int i=0; i<exp.size(); i++)
+        {
+            Monomial monomial = exp.get(i);//处理一个单项式
+            result.add(new Monomial());
+            result.get(i).coefficient = monomial.coefficient;//设置系数
+            if(!monomial.vars.containsKey(assigns))
+            {
+            	result.remove(i);
+            	i--;
+            }
+            else
+            {
+            	for(String var: monomial.vars.keySet())//逐个规定变量
+	            {
+	                if(assigns.equals(var)&&exp.get(i).vars.get(var)>1)
+	                {
+	                	result.get(i).coefficient *= exp.get(i).vars.get(var);
+	                    result.get(i).vars.put(var, monomial.vars.get(var)-1);
+	                }
+	                else if(!assigns.equals(var))
+	                	result.get(i).vars.put(var, monomial.vars.get(var));
+	            }
+            }
+        }
+        
 	}
 	
 	public static void main(String[] args)
@@ -189,7 +215,7 @@ public class Calculator
 					exp = expression(input);
 				else if(input.matches("!simplify[ A-Za-z0-9=]+$") )//处理运算命令
 					simplify(exp,input);
-				else if(input.matches("!d\\/d[A-Za-z]+$"))//处理求导命令
+				else if(input.matches("!d\\/d[\\sA-Za-z]+$"))//处理求导命令
 					derivative(exp,input);
 				else
 					//TODO 异常
