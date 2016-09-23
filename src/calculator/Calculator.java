@@ -10,18 +10,22 @@ public class Calculator
 		//表达式中的元素
 		Double coefficient;//系数
 		HashMap<String, Integer> vars;//变量，保存为变量名->次数的映射
-		
+
 		Monomial(String monomial)
 		{
 			coefficient = 1.0;
 			vars = new HashMap<String, Integer>();
-			
 			String var;//变量名
 			int index;//指数
-			
-			if(monomial.charAt(0) == '-')//处理负号
+
+			if(monomial.charAt(0) == '-')//处理减号
 			{
 				coefficient = -1.0;
+				monomial = monomial.substring(1);
+			}
+			else if(monomial.charAt(0) == '+')//处理加号
+			{
+				coefficient = 1.0;
 				monomial = monomial.substring(1);
 			}
 			String[] factors = monomial.split("\\*|(?<=[0-9])(?=[A-Za-z])|(?<=[A-Za-z])(?=[0-9])");
@@ -33,7 +37,7 @@ public class Calculator
 			for (String factor : factors)
 			{
 				if(factor.matches("^[A-Za-z]+$"))//变量
-					vars.put(factor,(((vars.get(factor)==null) ? 0 : (vars.get(factor)))+1));
+					vars.put(factor,((vars.containsKey(factor) ? (vars.get(factor))+1 : 1)));
 				else if(factor.matches("^[0-9]+(\\.[0-9]+)?$"))//数字
 					coefficient *= Double.valueOf(factor);
 				else if(factor.matches("^[A-Za-z]+\\^[0-9]+$"))//幂式
@@ -47,12 +51,12 @@ public class Calculator
 						{	
 							var = pair[0];
 							index = Integer.valueOf(pair[1]);
-							vars.put(var,(((vars.get(var)==null) ? 0 : (vars.get(var)))+index));
+							vars.put(var,((vars.containsKey(var) ? (vars.get(var))+index : index)));
 						}
 						else
 							return;//TODO 异常处理
 					}
-					
+
 				}
 				else
 					;//TODO 异常处理
@@ -63,27 +67,72 @@ public class Calculator
 			coefficient = 1.0;
 			vars = new HashMap<String, Integer>();
 		}
-		
+
 	}
+	
+	//合并同类项并进行输出
+	static void print(ArrayList <Monomial> result)
+	{
+		//合并同类项
+		HashMap <HashMap<String, Integer>,Monomial> map = new HashMap <HashMap<String, Integer>,Monomial>();
+		for(int i=0; i<result.size(); i++)
+		{
+			Monomial monomial = result.get(i);
+			if(map.containsKey(monomial.vars))
+			{
+				map.get(monomial.vars).coefficient += monomial.coefficient;
+				result.remove(i);
+				i--;
+			}
+			else
+				map.put(monomial.vars, monomial);
+		}
+		/*这个部分用来删除系数为0的项，但是我不输出它就可以不用删了
+		for(int i=0; i<result.size(); i++)
+		{
+			if(result.get(i).coefficient.equals(0.0))
+			{
+				result.remove(i);
+				i--;
+			}
+		}*/
+		//将结果输出
+		for(int i=0;i<result.size();i++)
+		{
+			Monomial monomial = result.get(i);
+			if(monomial.coefficient < 0)
+				System.out.print(monomial.coefficient);
+			else if((monomial.coefficient > 0) && (i != 0))
+				System.out.print("+" + monomial.coefficient);
+			for(String var : monomial.vars.keySet())
+			{
+				for(int i1=0; i1<monomial.vars.get(var);i1++)
+					System.out.print("*"+var);
+			}
+		}
+		System.out.println('\n');
+	}
+
 	//将字符串表达式转换成自定义数据类型
 	static ArrayList<Monomial> expression(String input)
 	{
 		ArrayList <Monomial> exp = new ArrayList <Monomial> ();//表达式
-		//TODO 把判断条件放这里 @李启飞
+
 		String fixedInput = input.replaceAll("(?<=[+\\-*^])\\s+(?=[+\\-*^])","");
 		String[] monomials = fixedInput.split("(?=\\+|-)");
 		for(String monomial : monomials)
 			exp.add(new Monomial(monomial));
+		print(exp);
 		return exp;
 	}
 	//按照输入的值对表达式进行计算
 	static void simplify(ArrayList <Monomial> exp, String input)
 	{
 		ArrayList <Monomial> result = new ArrayList <Monomial>();
-		String[] assigns = input.substring(9).split("\\s+");
 		HashMap <String,Double> solves = new HashMap <String,Double>();
-		Double tempcoe = 0.0;
+
 		//得到单个赋值表达式，进行处理，得到赋值表
+		String[] assigns = input.substring(9).split("\\s+");
 		for(String assign : assigns)
 		{
 			if(assign.length() == 0)
@@ -119,91 +168,67 @@ public class Calculator
 					result.get(i).vars.put(var, monomial.vars.get(var));
 			}
 		}
-		//对加法进行运算
-		//TODO 
-		for(int i=0; i<result.size(); i++)
-		{
-			if((result.get(i).vars.isEmpty()) || (result.get(i).coefficient.equals(0.0)))
-			{
-				tempcoe += result.get(i).coefficient;
-				result.remove(i);
-				i--;
-			}
-		}
-		//将结果输出
-		if(!tempcoe.equals(0.0))
-			System.out.print(tempcoe);
-		for(int i=0;i<result.size();i++)
-		{
-			Monomial monomial = result.get(i);
-			if(monomial.coefficient < 0)
-				System.out.print(monomial.coefficient);
-			else if((monomial.coefficient > 0) && (i != 0))
-				System.out.print("+" + monomial.coefficient);
-			for(String var : monomial.vars.keySet())
-			{
-				for(int i1=0; i1<monomial.vars.get(var);i1++)
-					System.out.print("*"+var);
-			}
-		}
+		print(result);
 	}
 	//对表达式求导
 	static void derivative(ArrayList <Monomial> exp, String input)
 	{
 		ArrayList <Monomial> result = new ArrayList <Monomial>();
-        String assigns = input.substring(4).replaceAll("\\s+","");
-        for(int i=0; i<exp.size(); i++)
-        {
-            Monomial monomial = exp.get(i);//处理一个单项式
-            result.add(new Monomial());
-            result.get(i).coefficient = monomial.coefficient;//设置系数
-            if(!monomial.vars.containsKey(assigns))
-            {
-            	result.remove(i);
-            	i--;
-            }
-            else
-            {
-            	for(String var: monomial.vars.keySet())//逐个规定变量
-	            {
-	                if(assigns.equals(var)&&exp.get(i).vars.get(var)>1)
-	                {
-	                	result.get(i).coefficient *= exp.get(i).vars.get(var);
-	                    result.get(i).vars.put(var, monomial.vars.get(var)-1);
-	                }
-	                else if(!assigns.equals(var))
-	                	result.get(i).vars.put(var, monomial.vars.get(var));
-	            }
-            }
-        }
-        
+		String assign = input.substring(4).replaceAll("\\s+","");
+		if(!assign.matches("^[A-Za-z]+$"))
+			return;//TODO 异常处理
+		//else
+		for(int i=0; i<exp.size(); i++)
+		{
+			Monomial monomial = exp.get(i);//处理一个单项式
+			result.add(new Monomial());
+			result.get(i).coefficient = monomial.coefficient;//设置系数
+			if(!monomial.vars.containsKey(assign))
+			{
+				result.remove(i);
+				i--;
+			}
+			else
+			{
+				for(String var: monomial.vars.keySet())//逐个规定变量
+				{
+					if((assign.equals(var)) && (exp.get(i).vars.get(var)>1))
+					{
+						result.get(i).coefficient *= exp.get(i).vars.get(var);
+						result.get(i).vars.put(var, monomial.vars.get(var)-1);
+					}
+					else if(!assign.equals(var))
+						result.get(i).vars.put(var, monomial.vars.get(var));
+					else
+						;//TODO 异常处理
+				}
+			}
+		}
+		print(result);
 	}
-	
+
 	public static void main(String[] args)
 	{
 		Scanner scan = new Scanner(System.in);
 		while(true)
 		{
-			String input = scan.nextLine();
+			System.out.print('5');
+			System.out.println('\n');
+			/*String input = scan.nextLine();
 			if(input.equals("!"))
 			{
 				scan.close();
 				System.exit(0);
 			}
-			else
-			{
-				Double test = -1.2;
-				if(!(test == 1.2))
-				{
-					System.out.println("+" + test);
-				}
-				/*String temp = input.substring(9);
+			else*/
+			//{
+			/*String temp = input.substring(9);
 				String[] splitedInputs = temp.split("\\s+");
 				for(String monomial:splitedInputs)
 				{
 					System.out.println(monomial);
 				}*/
-			}
+			//}
 		}
 		/*ArrayList <Monomial> exp;
 		while(true)
@@ -220,7 +245,7 @@ public class Calculator
 				else
 					//TODO 异常
 			}
-			
+
 		}*/
 	}
 
