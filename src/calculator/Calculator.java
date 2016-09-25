@@ -155,7 +155,7 @@ public class Calculator
 	{
 		ArrayList <Monomial> exp = new ArrayList <Monomial> ();//表达式
 
-		String fixedInput = input.replaceAll("(((?<=[+\\-*^])\\s)|(\\s(?=[+\\-*^])))+","");
+		String fixedInput = input.replaceAll("\\s+","");
 		String[] monomials = fixedInput.split("(?=\\+|-)");
 		for(String monomial : monomials)
 			exp.add(new Monomial(monomial));
@@ -277,7 +277,7 @@ public class Calculator
 				if(input.matches("^\\s*[+\\-]?\\s*(([a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?)|(\\d+(\\.\\d+)?))"
 						+ "((\\s*\\*\\s*\\d+(\\.\\d+)?)|(\\s*\\*?\\s*[a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?))*"
 						       + "(\\s*[+\\-]\\s*(([a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?)|(\\d+(\\.\\d+)?))"
-						+ "((\\s*\\*\\s*\\d+(\\.\\d+)?)|(\\s*\\*?\\s*[a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?))*)*$")
+						+ "((\\s*\\*\\s*\\d+(\\.\\d+)?)|(\\s*\\*?\\s*[a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?))*)*\\s*$")
 						&& !input.matches(".*[^+\\-*\\^]\\s+[^+\\-*\\^].*$")
 				  )//处理表达式
 				{
