@@ -177,13 +177,24 @@ public class Calculator
 			String[] temp = assign.split("=");
 			if(temp.length == 1)
 			{
-				System.out.println("Simplify parameter is loss!");
+				System.out.println("Simplify format is wrong!");
 				return;
 			}
 			else
 			{
 				if(temp[0].matches("^[A-Za-z]+$") && temp[1].matches("^-?\\d+(\\.\\d+)?$"))
 				{
+					Boolean flag = false;
+					for(Monomial monomial : exp)
+					{
+						if(monomial.vars.containsKey(temp[0]))
+							flag = true;
+					}
+					if(!flag)
+					{
+						System.out.println("No such variable(s) in the expression!!");
+						return;
+					}
 					if(!(solves.containsKey(temp[0])))
 						solves.put(temp[0], (Double.valueOf(temp[1])));
 					else
@@ -278,7 +289,7 @@ public class Calculator
 						+ "((\\s*\\*\\s*\\d+(\\.\\d+)?)|(\\s*\\*?\\s*[a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?))*"
 						       + "(\\s*[+\\-]\\s*(([a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?)|(\\d+(\\.\\d+)?))"
 						+ "((\\s*\\*\\s*\\d+(\\.\\d+)?)|(\\s*\\*?\\s*[a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?))*)*\\s*$")
-						&& !input.matches(".*[^+\\-*\\^]\\s+[^+\\-*\\^].*$")
+						&& !input.matches(".*[^+\\-*\\^\\s]\\s+[^+\\-*\\^\\s].*$")
 				  )//处理表达式
 				{
 					polynomia=input;
