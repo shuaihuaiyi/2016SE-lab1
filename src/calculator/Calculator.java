@@ -99,13 +99,23 @@ public class Calculator
             		System.out.print("1.0");
             	for(String var : monomial.vars.keySet())
                 {
-                    for(int k=0; k<monomial.vars.get(var);k++)
-                    {	
-                    	if((k == 0) && (j == 0))
-        					System.out.print(var);
+            		if(monomial.vars.get(var) <= 2)
+            		{
+	                    for(int k=0; k<monomial.vars.get(var);k++)
+	                    {
+	                    	if((k == 0) && (j == 0))
+	        					System.out.print(var);
+	        				else
+	        					System.out.print("*" + var);
+	                    }
+            		}
+            		else
+            		{
+            			if(j == 0)
+        					System.out.print(var + "^" + monomial.vars.get(var));
         				else
-        					System.out.print("*" + var);
-                    }
+        					System.out.print("*" + var + "^" + monomial.vars.get(var));
+            		}
                     j++;
                 }
             }
@@ -118,13 +128,23 @@ public class Calculator
             		System.out.print("1.0");
             	for(String var : monomial.vars.keySet())
                 {
-                    for(int k=0; k<monomial.vars.get(var);k++)
-                    {
-                    	if((k == 0) && (j == 0))
-        					System.out.print(var);
+            		if(monomial.vars.get(var) <= 2)
+            		{
+	                    for(int k=0; k<monomial.vars.get(var);k++)
+	                    {
+	                    	if((k == 0) && (j == 0))
+	        					System.out.print(var);
+	        				else
+	        					System.out.print("*" + var);
+	                    }
+            		}
+            		else
+            		{
+            			if(j == 0)
+        					System.out.print(var + "^" + monomial.vars.get(var));
         				else
-        					System.out.print("*" + var);
-                    }
+        					System.out.print("*" + var + "^" + monomial.vars.get(var));
+            		}
                     j++;
                 }
             }
@@ -141,8 +161,13 @@ public class Calculator
 	            }
             	for(String var : monomial.vars.keySet())
                 {
-                    for(int i1=0; i1<monomial.vars.get(var);i1++)
-                        System.out.print("*" + var);
+            		if(monomial.vars.get(var) <= 2)
+            		{
+	                    for(int k=0; k<monomial.vars.get(var);k++)
+	        				System.out.print("*" + var);
+            		}
+            		else
+        				System.out.print("*" + var + "^" + monomial.vars.get(var));
                 }
             }
             
