@@ -63,9 +63,9 @@ public class Calculator
     {
         //合并同类项
         HashMap <HashMap<String, Integer>,Monomial> map = new HashMap <HashMap<String, Integer>,Monomial>();
-        for(int i=0,j=0; j<result.size(); i++,j++)
+        for(int i=0; i<result.size(); i++)
         {
-            Monomial monomial = result.get(j);
+            Monomial monomial = result.get(i);
             if(map.containsKey(monomial.vars))
             {
                 map.get(monomial.vars).coefficient += monomial.coefficient;
@@ -90,10 +90,13 @@ public class Calculator
         for(int i=0; i<result.size(); i++)
         {
             Monomial monomial = result.get(i);
+            
             if(monomial.coefficient.equals(-1.0))
             {
             	System.out.print('-');
             	int j = 0;
+            	if(monomial.vars.isEmpty())
+            		System.out.print("1.0");
             	for(String var : monomial.vars.keySet())
                 {
                     for(int k=0; k<monomial.vars.get(var);k++)
@@ -111,10 +114,12 @@ public class Calculator
             	if(i != 0)
             		System.out.print('+');
             	int j = 0;
+            	if(monomial.vars.isEmpty())
+            		System.out.print("1.0");
             	for(String var : monomial.vars.keySet())
                 {
                     for(int k=0; k<monomial.vars.get(var);k++)
-                    {	
+                    {
                     	if((k == 0) && (j == 0))
         					System.out.print(var);
         				else
@@ -150,7 +155,7 @@ public class Calculator
 	{
 		ArrayList <Monomial> exp = new ArrayList <Monomial> ();//表达式
 
-		String fixedInput = input.replaceAll("(?<=[+\\-*^])\\s+(?=[+\\-*^])","");
+		String fixedInput = input.replaceAll("(((?<=[+\\-*^])\\s)|(\\s(?=[+\\-*^])))+","");
 		String[] monomials = fixedInput.split("(?=\\+|-)");
 		for(String monomial : monomials)
 			exp.add(new Monomial(monomial));
@@ -269,9 +274,11 @@ public class Calculator
 				 3.^幂运算后面必须是正整数前面是字母
 				 4.支持小数和负数运算。
 				 */
-				if(input.matches("^\\s*[+-]?\\s*(([a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?)|(\\d+(\\.\\d+)?))"
-						+ "((\\s*\\*\\s*\\d+(\\.\\d+)?)|(\\s*\\*?\\s*[a-zA-Z]+(\\^\\d*[1-9]+\\d*)?))*(\\s*[+-]{1}\\s*(([a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?)|(\\d+(\\.\\d+)?))"
+				if(input.matches("^\\s*[+\\-]?\\s*(([a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?)|(\\d+(\\.\\d+)?))"
+						+ "((\\s*\\*\\s*\\d+(\\.\\d+)?)|(\\s*\\*?\\s*[a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?))*"
+						       + "(\\s*[+\\-]\\s*(([a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?)|(\\d+(\\.\\d+)?))"
 						+ "((\\s*\\*\\s*\\d+(\\.\\d+)?)|(\\s*\\*?\\s*[a-zA-Z]+(\\s*\\^\\s*\\d*[1-9]+\\d*)?))*)*$")
+						&& !input.matches(".*[^+\\-*\\^]\\s+[^+\\-*\\^].*$")
 				  )//处理表达式
 				{
 					polynomia=input;
