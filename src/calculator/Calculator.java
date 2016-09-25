@@ -172,7 +172,7 @@ public class Calculator
 			String[] temp = assign.split("=");
 			if(temp.length == 1)
 			{
-				System.out.println("Simplify parameter is loss!");//TODO 异常处理
+				System.out.println("Simplify parameter is loss!");
 				return;
 			}
 			else
@@ -255,11 +255,11 @@ public class Calculator
 	public static void main(String[] args)
 	{
 		ArrayList <Monomial> exp;
+		Scanner scan = new Scanner(System.in);
 		String polynomia =null;
 		while(true)
 		{
 			System.out.print(">");
-			Scanner scan = new Scanner(System.in);
 			if(scan.hasNextLine())
 			{
 				String input = scan.nextLine();
