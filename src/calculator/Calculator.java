@@ -47,7 +47,6 @@ public class Calculator
 					index = Integer.valueOf(pair[1]);
 					vars.put(var,((vars.containsKey(var) ? (vars.get(var))+index : index)));
 				}
-
 			}
 		}
 		Monomial()
