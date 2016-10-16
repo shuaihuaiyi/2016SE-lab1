@@ -1,5 +1,3 @@
-# 2016SE-lab1
-
-2016年软件工程实验一，两人合作的所有代码
-
-实际上我们早已在另一个服务器的私有仓库进行了合作，因此有较多的commit历史
+hello world,welcome to lab1~
+I am a weaker of the winterfoll!!
+please help me if possible~~
