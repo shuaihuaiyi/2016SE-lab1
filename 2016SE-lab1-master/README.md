@@ -1,3 +1,3 @@
-hello world,welcome to lab1~
-I am a weaker of the winterfoll!!
-please help me if possible~~
+hello world,w4lcome~
+I am sorry,I need to modified you to finish the homework~
+by the way , winter is coming!
