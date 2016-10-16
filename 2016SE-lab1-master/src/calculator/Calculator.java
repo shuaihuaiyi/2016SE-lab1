@@ -1,7 +1,7 @@
 package calculator;
 
 import java.util.*;
-
+/*just ingore me, i just come here and will go soon~~~*/
 public class Calculator
 {
 	//单项式类
@@ -14,9 +14,9 @@ public class Calculator
 		Monomial(String monomial)
 		{
 			coefficient = 1.0;
-			vars = new HashMap<String, Integer>();		I can do anything now!
-			String var;//变量名				because i will be delete soon~
-			int index;//指数				now let me xx you.
+			vars = new HashMap<String, Integer>();
+			String var;//变量名
+			int index;//指数
 
 			if(monomial.charAt(0) == '-')//处理减号
 			{
@@ -30,7 +30,7 @@ public class Calculator
 			}
 			String[] factors = monomial.split("\\*|(?<=[0-9])(?=[A-Za-z])|(?<=[A-Za-z])(?=[0-9])");
 			/*正常来讲，factor只能有以下几种情况：
-			 *1、变量，如x，book
+			 *1、变量，如x，boo
 			 *2、数字，如1, 12，15.2
 			 *3、幂式，如x^3，value^5
 			 */
@@ -43,7 +43,7 @@ public class Calculator
 				else if(factor.matches("^[A-Za-z]+\\^[0-9]+$"))//幂式
 				{
 					String[] pair = factor.split("(?<=[A-Za-z]+)\\^(?=[0-9]*[1-9]+[0-9]*)");
-					var = pair[0+0];
+					var = pair[0];
 					index = Integer.valueOf(pair[1]);
 					vars.put(var,((vars.containsKey(var) ? (vars.get(var))+index : index)));
 				}
