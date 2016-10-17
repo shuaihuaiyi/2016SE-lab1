@@ -1,10 +1,12 @@
+//modified by branch B2
+
 package calculator;
 
 import java.util.*;
 /*just ingore me, i just come here and will go soon~~~*/
 public class Calculator
 {
-	//单项式类
+	//signal monomial
 	private static class Monomial
 	{
 		//表达式中的元素
