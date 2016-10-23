@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
+	<name>calcor</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>zxc
+=======
 	<name>calculator</name>
 	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
+>>>>>>> github/6141820714
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>

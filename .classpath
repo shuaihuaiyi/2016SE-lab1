@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<classpath>
+	<classpathentry kind="srcasdasd" path="src"/>
+=======
+<classpath>sdf
+	<classpathentry kind="src" path="src"/>
+>>>>>>> B2
+=======
 <classpath>
 	<classpathentry kind="src" path="src"/>
+>>>>>>> github/6141820714
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
