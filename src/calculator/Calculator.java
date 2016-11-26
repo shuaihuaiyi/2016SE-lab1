@@ -272,6 +272,8 @@ public class Calculator
 			return;
 		}
 		int count= 0;//用来计算表达式中是否有这个变量
+		if(exp==null)
+			return;
 		for(int i=0,j=0; j<exp.size(); i++,j++)
 		{
 			Monomial monomial = exp.get(j);//处理一个单项式
@@ -281,13 +283,13 @@ public class Calculator
 			{
 				result.remove(i);
 				count += 1;
+				if(count==exp.size())
+				{
+					System.out.println("Error! no variable!");
+					return;
+				}
 				i--;
 				continue;
-			}
-			if(count==exp.size())
-			{
-				System.out.println("Error! no variable!");
-				return;
 			}
 			for(String var: monomial.vars.keySet())//逐个规定变量
 			{
