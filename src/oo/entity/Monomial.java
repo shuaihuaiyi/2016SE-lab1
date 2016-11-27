@@ -4,7 +4,7 @@ import java.util.HashMap;
  * 单项式
  * @author ZZY
  */
-public class Monomial
+class Monomial
 {
 	//表达式中的元素
 	private Double coefficient;//系数
