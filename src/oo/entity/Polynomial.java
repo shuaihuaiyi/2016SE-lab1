@@ -15,6 +15,7 @@ public class Polynomial
 	{
 		String fixedInput = input.replaceAll("\\s+","");
 		String[] monomials = fixedInput.split("(?=\\+|-)");
+		polynomial = new ArrayList<>();
 		for(String monomial : monomials)
 			polynomial.add(new Monomial(monomial));
 	}
