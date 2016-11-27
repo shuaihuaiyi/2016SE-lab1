@@ -14,7 +14,7 @@ public class Calculator
 		Monomial(String monomial)
 		{
 			coefficient = 1.0;
-			vars = new HashMap<String, Integer>();
+			vars = new HashMap<>();
 			String var;//变量名
 			int index;//指数
 
